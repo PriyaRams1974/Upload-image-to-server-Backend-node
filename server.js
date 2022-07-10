@@ -18,10 +18,11 @@ const storage = multer.diskStorage({
 app.post('/single_img_upload', async(req,res) =>{
     const upload = await multer({storage:storage}).single('file')
     // console.log("received file",req.file.filename)
-    console.log("Received data",req.toString());
-    let data = req.toString()
-    console.log(JSON.stringify(data))
+    
     upload(req,res, function (err){
+      console.log("data==>", JSON.stringify(req.body));
+      let details = JSON.parse(JSON.stringify(req.body));
+      console.log("Name==>", details['name']);
       if (!req.file){
            res.send('Please select an image to upload');
       }else if (err instanceof multer.MulterError){
@@ -38,10 +39,13 @@ app.post('/single_img_upload', async(req,res) =>{
 })
 
 app.post('/multiple_img_upload', async(req,res) =>{
-    const upload = await multer({storage:storage}).array('files')
+    const upload = await multer({storage:storage}).array('file');
 
     upload(req,res, function (err){
-        console.log(req.files);
+      console.log("data==>", JSON.stringify(req.body));
+      let details = JSON.parse(JSON.stringify(req.body));
+      console.log("Name==>", details['name']);
+      console.log("Age==>", details['age']);
       if (!req.files){
           return res.send('Please select an image to upload');
       }else if (err instanceof multer.MulterError){
@@ -49,7 +53,7 @@ app.post('/multiple_img_upload', async(req,res) =>{
       }else if (err) {
         return res.send(err.message);
       }else{
-          console.log(req.files)
+          // console.log(req.files)
           var l = "file uploaded succesfully!!! \n";
           
           for (const file of req.files) {  
